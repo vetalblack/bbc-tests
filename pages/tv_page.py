@@ -15,3 +15,13 @@ class TVPage(BasePage):
             return True
         else:
             return False
+
+    def get_schedule(self):
+        schedule_cell_locator = (By.XPATH, "//ol[@class='highlight-box-wrapper']//li")
+        cell_time_locator = (By.XPATH, ".//h3[contains(@class, 'broadcast__time gamma')]")
+        result = []
+        for cell in self.elements_generator(schedule_cell_locator):
+            self.scroll_to_element(cell)
+            time_block = cell.find_element(*cell_time_locator)
+            result.append(time_block.text)
+        return result

@@ -10,6 +10,7 @@ def driver_init():
     driver = webdriver.Chrome(ChromeDriverManager().install())
     driver.set_window_position(0, 0)
     driver.maximize_window()
+    driver.implicitly_wait(10)
     return driver
 
 

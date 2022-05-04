@@ -1,15 +1,12 @@
+import allure
 from core import BasePage
 from selenium.webdriver.common.by import By
 
 
 class HomePage(BasePage):
-    def is_page_displayed(self):
-        media_list_locator = (By.XPATH, "//ul[contains(@class, 'media-list')]")
-        is_media_list_displayed = self.is_element_displayed(media_list_locator)
-        page_title = self.driver.title
-        if is_media_list_displayed and page_title == 'BBC - Homepage':
-            return True
-        else:
-            return False
-
-
+    def check_page_displaying(self):
+        home_page_heading = (By.XPATH, "//section[contains(@class, 'module module--header')]//h2//span[.='Welcome to BBC.com']")
+        with allure.step('Check displaying of page heading'):
+            assert self.find_element(home_page_heading, ignore_timeout=True), "Can`t find heading on the page"
+        with allure.step('Check displaying correct page title'):
+            assert self.driver.title == 'BBC - Homepage', "Incorrect page title"

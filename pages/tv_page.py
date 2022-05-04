@@ -1,20 +1,15 @@
+import allure
 from core import BasePage
 from selenium.webdriver.common.by import By
 
 
 class TVPage(BasePage):
-    def is_page_displayed(self):
+    def check_page_displaying(self):
         programmes_page_locator = (By.XPATH, "//div[contains(@class, 'programmes-page') and ./div[@id='programmes-content']]")
-        is_programmes_page_displayed = self.is_element_displayed(programmes_page_locator)
-        page_title = self.driver.title
-        if 'BBC WORLD NEWS' in page_title and '- Schedules' in page_title:
-            is_title_correct = True
-        else:
-            is_title_correct = False
-        if is_programmes_page_displayed and is_title_correct:
-            return True
-        else:
-            return False
+        with allure.step("Check displaying of programmes page"):
+            assert self.find_element(programmes_page_locator, ignore_timeout=True), "Can`t find programmes page"
+        with allure.step('Check displaying correct page title'):
+            assert 'BBC WORLD NEWS' in self.driver.title and '- Schedules' in self.driver.title, "Incorrect page title"
 
     def get_schedule(self):
         schedule_cell_locator = (By.XPATH, "//ol[@class='highlight-box-wrapper']//li")

@@ -21,9 +21,15 @@ class BasePage:
     def __init__(self, driver):
         self.driver = driver
 
-    def find_element(self, locator, timeout=10) -> WebElement:
-        element = WebDriverWait(self.driver, timeout).until(ec.presence_of_element_located(locator),
-                                                            message=f"Can't find element by locator {locator}")
+    def find_element(self, locator, timeout=10, ignore_timeout=False) -> WebElement:
+        if ignore_timeout:
+            try:
+                element = WebDriverWait(self.driver, timeout).until(ec.presence_of_element_located(locator))
+            except TimeoutException:
+                element = None
+        else:
+            element = WebDriverWait(self.driver, timeout).until(ec.presence_of_element_located(locator),
+                                                                message=f"Can't find element by locator {locator}")
         return element
 
     def elements_generator(self, locator, timeout=10):
@@ -43,8 +49,12 @@ class BasePage:
         top_value = 'true' if to_top else 'false'
         self.driver.execute_script(f"arguments[0].scrollIntoView(alignToTop={top_value});", webelement)
 
+    def scroll_to_page_bottom(self):
+        self.driver.execute_script(f"window.scrollTo(0, document.body.scrollHeight)")
+
     def find_and_click(self, locator, timeout=10):
         element = self.find_element(locator, timeout=timeout)
+        self.scroll_to_element(element)
         element.click()
 
     def find_and_enter(self, locator, text, time=10):
@@ -55,7 +65,7 @@ class BasePage:
     def wait_element_changing(self, html, locator, time=10):
         WebDriverWait(self.driver, time).until(ElementChanged(html, locator), message=f"Element hasn`t been changed")
 
-    def wait_element_stable(self, locator, timeout=2, retry_limit=10):
+    def wait_element_stable(self, locator, timeout=3, retry_limit=10):
         element_html = self.get_element_html(locator)
         retry_count = 0
         while retry_count <= retry_limit:

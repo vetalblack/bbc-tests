@@ -5,12 +5,13 @@ from pages.home_page import HomePage
 from pages.tv_page import TVPage
 
 
-@allure.title('switch')
+@allure.title('Switching between footer pages')
 @allure.severity(allure.severity_level.NORMAL)
 @pytest.mark.parametrize("parameters", [({
-    'page_name': 'Home'
+    'page': 'Home',
+    'name': 'Switching between footer pages'
 })])
-@pytest.mark.parametrize("browser", ['chrome'])
+@pytest.mark.parametrize("browser", ['chrome', 'opera'])
 def test_switch_footer_pages(parametrized_driver, parameters, browser):
     footer = Footer(parametrized_driver)
     home_page = HomePage(parametrized_driver)

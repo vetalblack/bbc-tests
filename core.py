@@ -3,6 +3,8 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.common.exceptions import TimeoutException, StaleElementReferenceException
 
+import constatns
+
 
 def antistale(func):
     # retry function when StaleElementReferenceException appears
@@ -82,6 +84,19 @@ class BasePage:
         element = self.find_element(locator)
         attribute_value = element.get_attribute('innerHTML')
         return attribute_value
+
+    def get_page_name_by_url(self):
+        current_url = self.driver.current_url
+        if current_url == f"{constatns.BASE_BBC_URL}/":
+            page_name = "Home"
+            return page_name
+
+        url_type = current_url.split('/')[3]
+        if url_type == "schedules":
+            page_name = "TV"
+        else:
+            page_name = url_type.capitalize()
+        return page_name
 
 
 class ElementChanged(object):

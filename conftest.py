@@ -6,7 +6,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.opera import OperaDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 import constatns
-from pages.components.footer import Footer
+from pages.components.header import Header
 
 
 def driver_init(browser, name='auto test'):
@@ -18,7 +18,7 @@ def driver_init(browser, name='auto test'):
             "enableVNC": True,
             "enableVideo": True,
             'videoName': f'{name}.mp4',
-            "name": name,
+            "name": f"{browser}_{name}",
             "sessionTimeout": '5m',
             "session-attempt-timeout": '5m',
             "service-startup-timeout": '5m',
@@ -68,10 +68,11 @@ def parametrized_driver(parameters: dict, browser: str):
         'page_name': 'TV'
     }
     """
-    page_name = parameters.get('page_name')
-    driver = driver_init(browser)
+    page_name = parameters.get('page')
+    test_name = parameters.get('name') or 'auto test'
+    driver = driver_init(browser, name=test_name)
     driver.get(constatns.BASE_BBC_URL)
-    Footer(driver).switch_to_page(page_name)
+    Header(driver).switch_to_page(page_name)
 
     yield driver
 
